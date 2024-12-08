@@ -1,0 +1,28 @@
+name: Security Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - audit-findings
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y solc python3-pip
+        pip install slither-analyzer
+
+    - name: Run Slither Analysis
+      run: |
+        slither .
