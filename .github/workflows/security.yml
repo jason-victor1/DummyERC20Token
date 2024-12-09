@@ -1,0 +1,48 @@
+name: Security Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - audit-findings
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  security:
+    runs-on: ubuntu-22.04  # Explicitly use Ubuntu 22.04 for stability
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Install Solc-Select and Specific Solidity Version
+      run: |
+        # Update the system
+        sudo apt update
+        sudo apt install -y curl python3 python3-pip
+        # Clone the solc-select repository and install it
+        git clone https://github.com/crytic/solc-select.git
+        cd solc-select
+        sudo python3 setup.py install
+        cd ..
+        # Install and use a specific version of solc
+        solc-select install 0.8.20
+        solc-select use 0.8.20
+        # Verify installed solc version
+        solc --version
+        # Cleanup
+        sudo rm -rf solc-select
+
+    - name: Install Slither
+      run: |
+        # Upgrade pip
+        pip install --upgrade pip
+        # Install Slither Analyzer
+        pip install slither-analyzer
+
+    - name: Run Slither Analysis
+      run: |
+        # Run Slither on the smart contracts
+        slither .
