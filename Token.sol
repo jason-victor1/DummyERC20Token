@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 
 contract Token {
     mapping(address => uint256) private _balances;
-    address public owner;
+    address public immutable owner;
     uint256 public totalSupply;
 
     // Events
@@ -17,12 +17,12 @@ contract Token {
     }
 
     constructor(uint256 initialSupply) {
-        owner = msg.sender;
+        owner = msg.sender; // Set owner as immutable
         totalSupply = initialSupply;
         _balances[msg.sender] = initialSupply;
     }
 
-    function transfer(address to, uint256 amount) public {
+    function transfer(address to, uint256 amount) public returns (bool) {
         require(to != address(0), "Transfer to zero address"); // Prevent zero address transfers
         uint256 senderBalance = _balances[msg.sender];
         require(senderBalance >= amount, "Insufficient balance");
@@ -32,6 +32,7 @@ contract Token {
             _balances[to] += amount;
         }
         emit Transfer(msg.sender, to, amount); // Emit transfer event
+        return true; // Return true to comply with ERC20 standard
     }
 
     function mint(uint256 amount) public onlyOwner {
