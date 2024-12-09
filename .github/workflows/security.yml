@@ -27,12 +27,13 @@ jobs:
         cd solc-select
         sudo python3 setup.py install
         cd ..
-        rm -rf solc-select
-        # Install and use a specific version of solc (replace with required version)
+        # Install and use a specific version of solc
         solc-select install 0.8.20
         solc-select use 0.8.20
         # Verify installed solc version
         solc --version
+        # Cleanup
+        sudo rm -rf solc-select
 
     - name: Install Slither
       run: |
