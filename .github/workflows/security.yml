@@ -11,7 +11,7 @@ on:
 
 jobs:
   security:
-    runs-on: ubuntu-22.04  # Explicitly use Ubuntu 22.04 for stability
+    runs-on: ubuntu-22.04  # Use Ubuntu 22.04
 
     steps:
     - name: Checkout Repository
@@ -19,21 +19,19 @@ jobs:
 
     - name: Install Solc-Select and Specific Solidity Version
       run: |
-        # Update the system
+        # Update the system and install dependencies
         sudo apt update
         sudo apt install -y curl python3 python3-pip
-        # Clone the solc-select repository and install it
+        # Clone and install solc-select
         git clone https://github.com/crytic/solc-select.git
         cd solc-select
         sudo python3 setup.py install
         cd ..
-        # Install and use a specific version of solc
-        solc-select install 0.8.20
-        solc-select use 0.8.20
-        # Verify installed solc version
+        # Install and use Solidity version 0.8.28
+        solc-select install 0.8.28
+        solc-select use 0.8.28
+        # Verify the installed version
         solc --version
-        # Cleanup
-        sudo rm -rf solc-select
 
     - name: Install Slither
       run: |
